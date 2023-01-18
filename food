@@ -1,0 +1,35 @@
+local player = game.Players.LocalPlayer
+local foodValue = script:WaitForChild("FoodValue")
+
+local foodObjects = {}
+
+local function spawnFood()
+	for i = 1, 15 do
+		local food = foodValue:Clone()
+		food.Parent = game.Workspace
+		food.CFrame = player.Character.Head.CFrame + Vector3.new(math.random(-10, 10), 0, math.random(-10, 10))
+		foodObjects[i] = food
+		food.Touched:Connect(function(hit)
+			if hit.Parent == player.Character then
+				local leaderstats = player:WaitForChild("leaderstats")
+				local Food = leaderstats:WaitForChild("Food")
+				Food.Value = Food.Value + food.Value
+				food:Destroy()
+			end
+		end)
+	end
+end
+
+local function despawnFood()
+	for i = 1, #foodObjects do
+		foodObjects[i]:Destroy()
+	end
+end
+
+spawnFood()
+
+while true do
+	wait(30)
+	despawnFood()
+	spawnFood()
+end
